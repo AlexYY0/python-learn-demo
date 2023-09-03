@@ -11,6 +11,7 @@ def print_hi(name):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    print('基础')
     # nameStr = input('please enter your name: ')
     # print('Hi', nameStr)
     # print_hi('PyCharm',nameStr)

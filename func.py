@@ -80,6 +80,7 @@ def person_check_default(name, age, *, city='Beijing', job):
 
 
 if __name__ == '__main__':
+    print('函数')
     print('--------------------------------------------------------')
     # print(my_abs('13'))
     print(my_abs(-13))

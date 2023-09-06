@@ -114,6 +114,7 @@ if __name__ == '__main__':
         n = n - 2
     print(sum)
     print('--------------------------------------------------------')
+    # d = dict({'Michael': 95, 'Bob': 75, 'Tracy': 85})
     d = {'Michael': 95, 'Bob': 75, 'Tracy': 85}
     print(d['Michael'])
     d['Adam'] = 67

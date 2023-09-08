@@ -1,8 +1,31 @@
+import json
 import os
+import pickle
 import shutil
-
 from io import BytesIO
 from io import StringIO
+
+
+class Student(object):
+    def __init__(self, name, age, score):
+        self.name = name
+        self.age = age
+        self.score = score
+
+
+# 转换函数（为对象序列化做准备，Class对象转为dict）
+def student2dict(std):
+    return {
+        'name': std.name,
+        'age': std.age,
+        'score': std.score
+    }
+
+
+# 转换函数（为对象序列化做准备，dict转Class对象）
+def dict2student(d):
+    return Student(d['name'], d['age'], d['score'])
+
 
 if __name__ == '__main__':
     print('--------------------------文件读写------------------------------')
@@ -63,11 +86,35 @@ if __name__ == '__main__':
     # 获取文件扩展名
     print(os.path.splitext('/Users/michael/testdir/file.txt'))
     # 复制文件
-    shutil.copyfile("file/mytxtfile.txt",'file/text.txt')
+    shutil.copyfile("file/mytxtfile.txt", 'file/text.txt')
     # 对文件重命名
     os.rename('file/text.txt', 'file/textRe.txt')
     # 删掉文件
     os.remove('file/textRe.txt')
     # 实战demo
     print([x for x in os.listdir('.') if os.path.isdir(x)])
-    print([x for x in os.listdir('.') if os.path.isfile(x) and os.path.splitext(x)[1]=='.py'])
+    print([x for x in os.listdir('.') if os.path.isfile(x) and os.path.splitext(x)[1] == '.py'])
+    print('--------------------------序列化------------------------------')
+    d = dict(name='Bob', age=20, score=88)
+    # 把任意对象序列化成一个bytes
+    print(pickle.dumps(d))
+    # 把对象序列化后写入一个file-like Object
+    with open('file/dump.txt', 'wb') as f:
+        pickle.dump(d, f)
+    # 用pickle.load()方法从一个file-like Object中直接反序列化出对象（或pickle.loads()）
+    with open('file/dump.txt', 'rb') as f:
+        dn = pickle.load(f)
+        print(dn)
+    print(pickle.loads(
+        b'\x80\x04\x95$\x00\x00\x00\x00\x00\x00\x00}\x94(\x8c\x04name\x94\x8c\x03Bob\x94\x8c\x03age\x94K\x14\x8c\x05score\x94KXu.'))
+    print('--------------------------JSON------------------------------')
+    print('序列化为JSON', json.dumps(d))
+    json_str = '{"age": 20, "score": 88, "name": "Bob"}'
+    print('JSON转Python对象（dict）', json.loads(json_str))  # 或者使用load()
+    # 对象序列化
+    s = Student('Bob', 20, 88)
+    print('Class序列化为JOSN', json.dumps(s, default=student2dict))
+    # 通常class的实例都有一个__dict__属性，它就是一个dict，用来存储实例变量。也有少数例外，比如定义了__slots__的class
+    print('Class序列化为JOSN', json.dumps(s, default=lambda obj: obj.__dict__))
+    # JSON反序列化为Class对象
+    print('JOSN转Class', json.loads(json_str, object_hook=dict2student))
